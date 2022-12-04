@@ -3,7 +3,6 @@ import nltk
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 import pickle
-import numpy as np
 import pandas as pd
 from sklearn.metrics import classification_report
 from sklearn.ensemble import RandomForestClassifier
@@ -22,15 +21,15 @@ def load_data(database_filepath):
     """
     database_filepath: file path of the database
 
-
     First, create engine, then read sql table from database
     return : X, y, category_name
     """
     engine = create_engine(f'sqlite:///{database_filepath}')
     df = pd.read_sql_table('DisaterResponse', con=engine)
     X = df.message
-    y = df[df.columns[4:]]
-    category_names = list(df.columns[4:])
+    y = df.drop(columns=['id', 'message', 'original', 'genre'])
+    # print(y.columns)
+    category_names = y.columns.tolist()
 
     return X, y, category_names
 
@@ -43,15 +42,10 @@ def tokenize(text):
     First, we tokenize text.
     Then using WordNetLemmatizer to lemmatize token from text
     Finally return the token cleaned
-
     """
     tokens = word_tokenize(text)
-    lemmatizer = WordNetLemmatizer()
-    clean_tokens = []
-    for token in tokens:
-        clean_token = lemmatizer.lemmatize(token).lower().strip()
-        clean_tokens.append(clean_token)
-
+    lemma = WordNetLemmatizer()
+    clean_tokens = [lemma.lemmatize(i).lower().strip() for i in tokens]
     return clean_tokens
 
 
@@ -64,11 +58,12 @@ def build_model():
         ('tfidf', TfidfTransformer()),
         ('clf', MultiOutputClassifier(RandomForestClassifier()))
     ])
+
     parameters = {
-        'clf__estimator__n_estimators': [50, 60, 70],
-        'clf__estimator__max_depth': [10, 50, None],
-        'clf__estimator__min_samples_leaf': [2, 5, 10]
+        'clf__estimator__n_estimators': [4, 6, 8],
+        'clf__estimator__max_depth': [4, 6, 8],
     }
+
     model = GridSearchCV(pipeline, parameters)
     return model
 
@@ -93,6 +88,7 @@ def save_model(model, model_filepath):
     """ 
     model: trained model
     model_filepath: path to save model
+    finally dump model to model_filepath
     """
     pickle.dump(model, open(model_filepath, 'wb'))
 
