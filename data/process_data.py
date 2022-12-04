@@ -28,20 +28,18 @@ def clean_data(df):
     """
     categories = df['categories'].str.split(';', expand=True)
 
+    # select first row
     row = categories.iloc[0]
+    # print(row)
 
-    category_colnames = []
-    for entry in row:
-        category_colnames.append(entry[:-2])
-
+    # extract new columns names
+    category_colnames = [r.split('-')[0] for r in row]
+    # rename
     categories.columns = category_colnames
 
     for col in categories:
         categories[col] = categories[col].str[-1]
         categories[col] = categories[col].astype(int)
-
-    categories['related'] = categories['related'].replace(
-        to_replace=2, value=1)
 
     df.drop('categories', axis=1, inplace=True)
     df = pd.concat([df, categories], axis=1)
@@ -54,6 +52,7 @@ def save_data(df, database_filename):
     """
     df: dataframe
     database_filename: name of database
+    save data to sqlite database
     """
     engine = create_engine(f'sqlite:///{database_filename}')
     df.to_sql('DisaterResponse', engine, index=False, if_exists='replace')
