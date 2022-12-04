@@ -38,7 +38,6 @@ model = joblib.load("../models/classifier.pkl")
 @app.route('/')
 @app.route('/index')
 def index():
-
     graphs = [
         {
             'data': [
@@ -73,6 +72,9 @@ def index():
                 },
                 'xaxis': {
                     'title': "Category"
+                },
+                "marker": {
+                    "color": 'red'
                 }
             }
         }
