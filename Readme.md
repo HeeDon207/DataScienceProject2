@@ -2,26 +2,24 @@
 
 ### Instructions:
 
-In this project, I've learned and built on my data engineering skills to expand my opportunities and potential as a data scientist. In this project, I'll apply these skills to analyze disaster data from Appen to build a model for an API that classifies disaster messages.
-
-You created a machine learning pipeline to categorize these events so that I can send the messages to an appropriate disaster relief agency.
+In this course, I've learned and built on my data engineering skills to expand my opportunities and potential as a data scientist. In this project, I'll apply these skills to analyze disaster data from Appen to build a model for an API that classifies disaster messages.
 
 ### File in the repository
 
 ```
 app
 | - template
-| |- master.html
-| |- go.html
-|- run.py
+| |- master.html # main page of web app
+| |- go.html # classification result page of web app
+|- run.py # Flask file that runs app
 data
-|- disaster_categories.csv
-|- disaster_messages.csv
+|- disaster_categories.csv # data to process
+|- disaster_messages.csv # data to process
 |- process_data.py
-|- DisasterResponse.db
+|- InsertDatabaseName.db # database to save clean data to
 models
 |- train_classifier.py
-|- classifier.pkl
+|- classifier.pkl # saved model
 README.md
 ```
 
